@@ -1,0 +1,11 @@
+# change any of these
+import pygame
+
+HEIGHT = 450
+WIDTH = 800
+ACCEL = 0.5  # movement acceleration
+FRICTION = 0.12  # friction
+FPS = 60
+
+pygame.font.init()
+FONT = pygame.font.SysFont("jetbrainsmonobold, sfmono, monospace", 13)
