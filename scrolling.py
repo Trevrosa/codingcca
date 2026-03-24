@@ -70,7 +70,6 @@ class Player(pygame.sprite.Sprite):
     def jump(self):
         self.vel.y = -15
 
-    # FIXME: might not work if player is on multiple platforms at once
     # FIXME: dont teleport the player if they collide with the side of a platform
     def update(self):
         #                                sprite  sprites  delete?
