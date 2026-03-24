@@ -18,7 +18,7 @@ from util import text
 DEBUG = True
 
 pygame.init()
-vec = pygame.math.Vector2  # 2 dimensional
+vec = pygame.math.Vector2  # 2 dimensional 
 
 frames_per_second = pygame.time.Clock()
 
@@ -35,6 +35,7 @@ class Player(pygame.sprite.Sprite):
 
         self.initial_pos = vec(15, HEIGHT - 50)
         self.pos = self.initial_pos
+
         self.vel = vec(0, 0)
         self.accel = vec(0, 0)
 
@@ -53,7 +54,7 @@ class Player(pygame.sprite.Sprite):
         self.pos += self.vel + 0.5 * self.accel
 
         if self.pos.y > HEIGHT:
-            self.pos = vec(30, HEIGHT - 50)
+            self.pos = vec(15, HEIGHT - 50)
 
         # top left align
         if self.pos.x < self.surf.get_width() / 2:
@@ -63,7 +64,7 @@ class Player(pygame.sprite.Sprite):
             self.pos.y = self.surf.get_height()
             self.vel.y = 0
 
-        self.rect.midbottom = self.pos
+        self.rect.midbottom = self.pos # type: ignore
 
     def jump(self):
         self.vel.y = -15
@@ -71,8 +72,8 @@ class Player(pygame.sprite.Sprite):
     # FIXME: might not work if player is on multiple platforms at once
     # FIXME: dont teleport the player if they collide with the side of a platform
     def update(self):
-        #                               sprite  sprites  delete?
-        hits = pygame.sprite.spritecollide(PLAYER, platforms, False)
+        #                                  sprite  sprites  delete?
+        hits = pygame.sprite.spritecollide(PLAYER, platforms, False) # type: ignore
         if hits:
             if self.pos.y > hits[0].rect.bottom:
                 self.pos.y = (
@@ -107,7 +108,8 @@ platforms = pygame.sprite.Group(
         Platform((0, HEIGHT)),
         Platform((WIDTH // 2 - 60, HEIGHT - 70), length=100),
         Platform((WIDTH // 4 - 20, HEIGHT - 190), length=100),
-    ]
+        Platform((WIDTH - 100, HEIGHT - 190), length=100),
+    ] # type: ignore
 )
 
 all_sprites = pygame.sprite.Group()
@@ -181,7 +183,7 @@ while True:
         cam = text(f"cam: {CAMERA:.2f}")
         display.blit(cam, (10, 50))
 
-        collision = pygame.sprite.spritecollide(PLAYER, platforms, False)
+        collision = pygame.sprite.spritecollide(PLAYER, platforms, False) # type: ignore
         if collision:
             collision_text = text(
                 f"on: {collision[0].pos} scr({transform(collision[0].pos.x):.2f}), l:{collision[0].length} w:{collision[0].width}",
