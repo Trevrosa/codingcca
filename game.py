@@ -12,10 +12,9 @@ from pygame.constants import (
     KEYDOWN,
 )
 
-from consts import WIDTH, HEIGHT, ACCEL, FRICTION, FPS
-from util import text
-
-DEBUG = True
+from consts import DEBUG, WIDTH, HEIGHT, ACCEL, FRICTION, FPS
+from objects import Platform
+from util import debug
 
 pygame.init()
 vec = pygame.math.Vector2  # 2 dimensional
@@ -33,8 +32,7 @@ class Player(pygame.sprite.Sprite):
         self.surf.fill((128, 255, 40))  # rgb
         self.rect = self.surf.get_rect()
 
-        self.initial_pos = vec(15, HEIGHT - 50)
-        self.pos = self.initial_pos
+        self.pos = vec(15, HEIGHT - 50)
         self.vel = vec(0, 0)
         self.accel = vec(0, 0)
 
@@ -63,16 +61,16 @@ class Player(pygame.sprite.Sprite):
             self.pos.y = self.surf.get_height()
             self.vel.y = 0
 
-        self.rect.midbottom = self.pos # type: ignore
+        self.rect.midbottom = self.pos  # type: ignore
 
     def jump(self):
         self.vel.y = -15
 
-    # FIXME: might not work if player is on multiple platforms at once
+    # FIXME: might not work if player is colliding with multiple sprites at once
     # FIXME: dont teleport the player if they collide with the side of a platform
     def update(self):
         #                               sprite  sprites  delete?
-        hits = pygame.sprite.spritecollide(PLAYER, platforms, False) # type: ignore
+        hits = pygame.sprite.spritecollide(PLAYER, platforms, False)  # type: ignore
         if hits:
             if self.pos.y > hits[0].rect.bottom:
                 self.pos.y = (
@@ -87,19 +85,6 @@ class Player(pygame.sprite.Sprite):
                 self.vel.y = 0
 
 
-class Platform(pygame.sprite.Sprite):
-    def __init__(self, pos: tuple[float, float], length=WIDTH / 4, width=20):
-        super().__init__()
-
-        self.length = length
-        self.width = width
-        self.pos = vec(pos[0], pos[1] - self.width)
-
-        self.surf = pygame.Surface((self.length, self.width))
-        self.surf.fill((255, 0, 0))
-        self.rect = self.surf.get_rect(topleft=self.pos)
-
-
 PLAYER = Player()
 
 platforms = pygame.sprite.Group(
@@ -107,7 +92,7 @@ platforms = pygame.sprite.Group(
         Platform((0, HEIGHT)),
         Platform((WIDTH // 2 - 60, HEIGHT - 70), length=100),
         Platform((WIDTH // 4 - 20, HEIGHT - 190), length=100),
-    ] # type: ignore
+    ]  # type: ignore
 )
 
 all_sprites = pygame.sprite.Group()
@@ -143,51 +128,14 @@ while True:
         display.blit(entity.surf, entity.rect)
 
     if DEBUG:
-        if grid_lines:
-            for x in range(0, WIDTH, 20):
-                pygame.draw.line(display, (0, 120, 20), (x, 0), (x, HEIGHT))
-            for y in range(0, HEIGHT, 20):
-                pygame.draw.line(display, (0, 120, 20), (0, y), (WIDTH, y))
-
-            for x in range(0, WIDTH, 60):
-                pygame.draw.line(display, (0, 20, 170), (x, 0), (x, HEIGHT))
-            for y in range(0, HEIGHT, 60):
-                pygame.draw.line(display, (0, 20, 170), (0, y), (WIDTH, y))
-
-        p_pos = text(f"pos: ({PLAYER.pos.x:.2f}, {PLAYER.pos.y:.2f})")
-        display.blit(p_pos, (10, 10))
-
-        p_vel = text(f"vel: ({PLAYER.vel.x:.2f}, {PLAYER.vel.y:.2f})")
-        display.blit(p_pos, (10, 10))
-
-        p_vel = text(f"vel: ({PLAYER.vel.x:.2f}, {PLAYER.vel.y:.2f})")
-        display.blit(p_vel, (10, 30))
-
-        collision = pygame.sprite.spritecollide(PLAYER, platforms, False) # type: ignore
-        if collision:
-            collision_text = text(
-                f"on: {collision[0].pos}, l:{collision[0].length} w:{collision[0].width}"
-            )
-            display.blit(collision_text, (10, 50))
-
-        cursor_pos = pygame.mouse.get_pos()
-        cursor = text(f"({cursor_pos[0]}, {cursor_pos[1]})")
-        display.blit(cursor, (cursor_pos[0] + 1, cursor_pos[1] - 15))
-
-        for entity in all_sprites:
-            if entity == PLAYER:
-                continue
-
-            info = f"> {entity.pos}, l:{entity.length} w:{entity.width}"
-            info = text(info)
-            if entity_info:
-                display.blit(info, (entity.pos.x, entity.pos.y - 15))
-            else:
-                cursor_pos = pygame.mouse.get_pos()
-                cursor = pygame.Rect((cursor_pos[0], cursor_pos[1] - 10), (20, 20))
-
-                if cursor.colliderect(entity.rect):
-                    display.blit(info, (cursor_pos[0] + 1, cursor_pos[1] - 15))
+        debug(
+            display,
+            PLAYER,
+            all_sprites,
+            platforms,
+            grid_lines,
+            entity_info,
+        )
 
     pygame.display.update()
     frames_per_second.tick(FPS)

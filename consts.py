@@ -1,6 +1,8 @@
 # change any of these
 import pygame
 
+DEBUG = True
+
 HEIGHT = 450
 WIDTH = 800
 ACCEL = 0.5  # movement acceleration
