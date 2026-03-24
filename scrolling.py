@@ -54,17 +54,6 @@ class Player(pygame.sprite.Sprite):
         self.vel += self.accel
         self.pos += self.vel + 0.5 * self.accel
 
-        if self.pos.y > HEIGHT:
-            self.pos = vec(15, HEIGHT - 50)
-
-        # top left align
-        if self.pos.x < self.surf.get_width() / 2:
-            self.pos.x = self.surf.get_width() / 2
-            self.vel.x = 0
-        if self.pos.y < self.surf.get_height():
-            self.pos.y = self.surf.get_height()
-            self.vel.y = 0
-
         self.rect.midbottom = self.pos  # type: ignore
 
     def jump(self):
@@ -95,6 +84,17 @@ class Player(pygame.sprite.Sprite):
                     pygame.quit()
                     sys.exit()
                 setup_level()
+
+        if self.pos.y > HEIGHT:
+            self.pos = vec(15, HEIGHT - 50)
+
+        # top left align
+        if self.pos.x < self.surf.get_width() / 2:
+            self.pos.x = self.surf.get_width() / 2
+            self.vel.x = 0
+        if self.pos.y < self.surf.get_height():
+            self.pos.y = self.surf.get_height()
+            self.vel.y = 0
 
 
 PLAYER = Player()
