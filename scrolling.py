@@ -124,8 +124,8 @@ setup_level()
 # only horizontal
 CAMERA = PLAYER.pos.x - WIDTH // 2
 
-entity_info = False
-grid_lines = True
+show_entity_info = False
+show_grid_lines = True
 
 
 while True:
@@ -141,9 +141,9 @@ while True:
                 sys.exit()
             elif DEBUG:
                 if event.key == K_z:
-                    entity_info = not entity_info
+                    show_entity_info = not show_entity_info
                 elif event.key == K_x:
-                    grid_lines = not grid_lines
+                    show_grid_lines = not show_grid_lines
 
     display.fill((0, 0, 0))
 
@@ -161,9 +161,10 @@ while True:
             PLAYER,
             ALL_SPRITES,
             LEVEL,
-            grid_lines,
-            entity_info,
+            show_grid_lines,
+            show_entity_info,
             cam=CAMERA,
+            world_info=f"Level {level_num + 1}"
         )
 
     pygame.display.update()

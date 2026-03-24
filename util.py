@@ -42,15 +42,16 @@ def debug(
     player,
     all_sprites,
     level,
-    grid_lines,
-    entity_info,
+    show_grid_lines,
+    show_entity_info,
+    world_info: str | None = None,
     cam: float | None = None,
 ):
-    """"renders debug info to the screen"""
+    """ "renders debug info to the screen"""
 
     scrolling = cam is not None
 
-    if grid_lines:
+    if show_grid_lines:
         for x in range(0, WIDTH, 20):
             pygame.draw.line(display, (0, 120, 20), (x, 0), (x, HEIGHT))
         for y in range(0, HEIGHT, 20):
@@ -61,10 +62,11 @@ def debug(
         for y in range(0, HEIGHT, 60):
             pygame.draw.line(display, (0, 20, 170), (0, y), (WIDTH, y))
 
+    if world_info:
+        display.blit(text(world_info), (WIDTH - text(world_info).get_width() - 10, 10))
+
     if scrolling:
-        p_pos = text(
-            f"pos: ({player.pos.x:.2f}, {player.pos.y:.2f}) scr({transform(player.pos.x, cam):.2f})",
-        )
+        p_pos = text(f"pos: ({player.pos.x:.2f}, {player.pos.y:.2f}) scr({transform(player.pos.x, cam):.2f})")
     else:
         p_pos = text(f"pos: ({player.pos.x:.2f}, {player.pos.y:.2f})")
     display.blit(p_pos, (10, 10))
@@ -79,13 +81,9 @@ def debug(
     collisions = pygame.sprite.spritecollide(player, level, False)  # type: ignore
     if collisions:
         if scrolling:
-            collision_text = text(
-                f"on: {', '.join([f'{c.pos} scr({transform(c.pos.x, cam):.2f}), {fmt_obj(c)}' for c in collisions])}"
-            )
+            collision_text = text(f"on: {', '.join([f'{c.pos} scr({transform(c.pos.x, cam):.2f}), {fmt_obj(c)}' for c in collisions])}")
         else:
-            collision_text = text(
-                f"on: {', '.join([f'{c.pos}, {fmt_obj(c)}' for c in collisions])}"
-            )
+            collision_text = text(f"on: {', '.join([f'{c.pos}, {fmt_obj(c)}' for c in collisions])}")
         display.blit(collision_text, (10, 70 if scrolling else 50))
 
     cursor_pos = vec(pygame.mouse.get_pos())
@@ -100,13 +98,11 @@ def debug(
             continue
 
         if scrolling:
-            info = text(
-                f"> {entity.pos} scr({transform(entity.pos.x, cam):.2f}), {fmt_obj(entity)}"
-            )
+            info = text(f"> {entity.pos} scr({transform(entity.pos.x, cam):.2f}), {fmt_obj(entity)}")
         else:
             info = text(f"> {entity.pos}, {fmt_obj(entity)}")
 
-        if entity_info:
+        if show_entity_info:
             if scrolling:
                 display.blit(info, transform(vec(entity.pos.x, entity.pos.y - 15), cam))
             else:

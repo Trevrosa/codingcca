@@ -62,12 +62,7 @@ class Player(pygame.sprite.Sprite):
         hits = pygame.sprite.spritecollide(PLAYER, platforms, False)  # type: ignore
         if hits:
             if self.pos.y > hits[0].rect.bottom:
-                self.pos.y = (
-                    hits[0].rect.bottom
-                    + hits[0].surf.get_height()
-                    + self.surf.get_height() / 2
-                    + 1
-                )
+                self.pos.y = hits[0].rect.bottom + hits[0].surf.get_height() + self.surf.get_height() / 2 + 1
                 self.vel.y = 0
             else:
                 self.pos.y = hits[0].rect.top + 1
@@ -99,8 +94,8 @@ all_sprites = pygame.sprite.Group()
 all_sprites.add(PLAYER)
 all_sprites.add(platforms)
 
-entity_info = False
-grid_lines = True
+show_entity_info = False
+show_grid_lines = True
 
 while True:
     for event in pygame.event.get():
@@ -115,9 +110,9 @@ while True:
                 sys.exit()
             elif DEBUG:
                 if event.key == K_z:
-                    entity_info = not entity_info
+                    show_entity_info = not show_entity_info
                 elif event.key == K_x:
-                    grid_lines = not grid_lines
+                    show_grid_lines = not show_grid_lines
 
     display.fill((0, 0, 0))
 
@@ -133,8 +128,8 @@ while True:
             PLAYER,
             all_sprites,
             platforms,
-            grid_lines,
-            entity_info,
+            show_grid_lines,
+            show_entity_info,
         )
 
     pygame.display.update()
