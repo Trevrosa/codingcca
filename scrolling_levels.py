@@ -1,4 +1,3 @@
-import sys
 from pygame import Vector2 as vec
 
 from consts import HEIGHT, WIDTH
@@ -34,10 +33,4 @@ level2 = Level(
     end=End((WIDTH // 2 + 300, HEIGHT - 90)),
 )
 
-# Get all Level instances from the current module
-current_module = sys.modules[__name__]
-levels = [
-    getattr(current_module, name)
-    for name in dir(current_module)
-    if isinstance(getattr(current_module, name), Level) and name.startswith("level")
-]
+levels = [x for x in list(vars().values()) if isinstance(x, Level)]
