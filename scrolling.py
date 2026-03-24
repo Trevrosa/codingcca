@@ -71,7 +71,7 @@ class Player(pygame.sprite.Sprite):
                         + hits[0].surf.get_height()
                         + self.surf.get_height() / 2
                         + 1
-                    )
+                    )  # fmt: skip
                     self.vel.y = 0
                 else:
                     self.pos.y = hits[0].rect.top + 1
@@ -156,16 +156,7 @@ while True:
         display.blit(entity.surf, transform(entity.rect, CAMERA))
 
     if DEBUG:
-        debug(
-            display,
-            PLAYER,
-            ALL_SPRITES,
-            LEVEL,
-            show_grid_lines,
-            show_entity_info,
-            cam=CAMERA,
-            world_info=f"Level {level_num + 1}"
-        )
+        debug(display, PLAYER, ALL_SPRITES, LEVEL, show_grid_lines, show_entity_info, cam=CAMERA, world_info=f"Level {level_num + 1}")
 
     pygame.display.update()
     frames_per_second.tick(FPS)

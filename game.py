@@ -11,13 +11,13 @@ from pygame.constants import (
     QUIT,
     KEYDOWN,
 )
+from pygame.math import Vector2 as vec
 
 from consts import DEBUG, WIDTH, HEIGHT, ACCEL, FRICTION, FPS
 from objects import Platform
 from util import debug
 
 pygame.init()
-vec = pygame.math.Vector2  # 2 dimensional
 
 frames_per_second = pygame.time.Clock()
 
@@ -55,17 +55,21 @@ class Player(pygame.sprite.Sprite):
     def jump(self):
         self.vel.y = -15
 
-    # FIXME: might not work if player is colliding with multiple sprites at once
     # FIXME: dont teleport the player if they collide with the side of a platform
     def update(self):
         #                               sprite  sprites  delete?
-        hits = pygame.sprite.spritecollide(PLAYER, platforms, False)  # type: ignore
-        if hits:
-            if self.pos.y > hits[0].rect.bottom:
-                self.pos.y = hits[0].rect.bottom + hits[0].surf.get_height() + self.surf.get_height() / 2 + 1
+        hits = pygame.sprite.spritecollide(PLAYER, LEVEL, False)  # type: ignore
+        for hit in hits:
+            if self.pos.y > hit.rect.bottom:
+                self.pos.y = (
+                    hits[0].rect.bottom
+                    + hits[0].surf.get_height()
+                    + self.surf.get_height() / 2
+                    + 1
+                )  # fmt: skip
                 self.vel.y = 0
             else:
-                self.pos.y = hits[0].rect.top + 1
+                self.pos.y = hit.rect.top + 1
                 self.vel.y = 0
 
         if self.pos.x > WIDTH - self.surf.get_width() / 2 or self.pos.y > HEIGHT:
@@ -82,7 +86,7 @@ class Player(pygame.sprite.Sprite):
 
 PLAYER = Player()
 
-platforms = pygame.sprite.Group(
+LEVEL = pygame.sprite.Group(
     [
         Platform((0, HEIGHT)),
         Platform((WIDTH // 2 - 60, HEIGHT - 70), length=100),
@@ -90,9 +94,9 @@ platforms = pygame.sprite.Group(
     ]  # type: ignore
 )
 
-all_sprites = pygame.sprite.Group()
-all_sprites.add(PLAYER)
-all_sprites.add(platforms)
+ALL_SPRITES = pygame.sprite.Group()
+ALL_SPRITES.add(PLAYER)
+ALL_SPRITES.add(LEVEL)
 
 show_entity_info = False
 show_grid_lines = True
@@ -119,15 +123,15 @@ while True:
     PLAYER.move()
     PLAYER.update()
 
-    for entity in all_sprites:
+    for entity in ALL_SPRITES:
         display.blit(entity.surf, entity.rect)
 
     if DEBUG:
         debug(
             display,
             PLAYER,
-            all_sprites,
-            platforms,
+            ALL_SPRITES,
+            LEVEL,
             show_grid_lines,
             show_entity_info,
         )
