@@ -73,9 +73,9 @@ class Player(pygame.sprite.Sprite):
                 self.pos.y = hit.rect.top + 1
                 self.vel.y = 0
 
-        if self.pos.x > WIDTH - self.surf.get_width():
+        if self.pos.x > WIDTH - self.surf.get_width() / 2:
             level_pos = (level_pos[0] + 1, level_pos[1])
-            self.pos = vec(self.surf.get_width(), self.pos.y)
+            self.pos = vec(self.surf.get_width() / 2, self.pos.y)
             setup_level()
         
         if self.pos.y > HEIGHT:
@@ -85,7 +85,7 @@ class Player(pygame.sprite.Sprite):
 
         if self.pos.x < self.surf.get_width() / 2:
             level_pos = (level_pos[0] - 1, level_pos[1])
-            self.pos = vec(WIDTH - self.surf.get_width(), self.pos.y)
+            self.pos = vec(WIDTH - self.surf.get_width() / 2, self.pos.y)
             setup_level()
             
         if self.pos.y < self.surf.get_height():
