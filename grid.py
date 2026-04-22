@@ -15,6 +15,7 @@ from pygame.math import Vector2 as vec
 
 from consts import DEBUG, WIDTH, HEIGHT, ACCEL, FRICTION, FPS
 from grid_levels import levels
+from objects import Coin
 from util import debug
 
 pygame.init()
@@ -36,6 +37,8 @@ class Player(pygame.sprite.Sprite):
         self.vel = vec(0, 0)
         self.accel = vec(0, 0)
 
+        self.score = 0
+
     def move(self):
         self.accel = vec(0, 0.5)
 
@@ -55,13 +58,22 @@ class Player(pygame.sprite.Sprite):
     def jump(self):
         self.vel.y = -15
 
-    # FIXME: dont teleport the player if they collide with the side of a platform
     def update(self):
         global level_pos
         #                               sprite  sprites  delete?
         hits = pygame.sprite.spritecollide(PLAYER, LEVEL, False)  # type: ignore
         for hit in hits:
-            if self.pos.y > hit.rect.bottom:
+            if isinstance(hit, Coin):
+                levels[level_pos].remove_coin(hit)
+                self.score += 1
+                continue
+            if self.pos.x < hit.rect.left:
+                self.pos.x = hit.rect.left - self.surf.get_width() / 2
+                self.vel.x = 0
+            elif self.pos.x > hit.rect.right:
+                self.pos.x = hit.rect.right + self.surf.get_width() / 2
+                self.vel.x = 0
+            elif self.pos.y > hit.rect.bottom:
                 self.pos.y = (
                     hits[0].rect.bottom
                     + hits[0].surf.get_height()

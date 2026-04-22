@@ -1,7 +1,7 @@
 import pygame
 from pygame.math import Vector2 as vec
 
-from consts import DEBUG, WIDTH
+from consts import WIDTH
 
 
 class Platform(pygame.sprite.Sprite):
@@ -16,15 +16,13 @@ class Platform(pygame.sprite.Sprite):
         self.surf.fill((255, 0, 0))
         self.rect = self.surf.get_rect(topleft=self.pos)
 
-
-class End(pygame.sprite.Sprite):
-    def __init__(self, pos: tuple[float, float], size=40):
+class Coin(pygame.sprite.Sprite):
+    def __init__(self, pos: tuple[float, float]):
         super().__init__()
 
-        self.size = size
-        self.pos = vec(pos) - vec(0, self.size)
+        self.pos = vec(pos)
 
-        self.surf = pygame.Surface((self.size, self.size))
-        if DEBUG:
-            self.surf.fill((0, 0, 255))
+        self.surf = pygame.Surface((20, 20))
+        self.surf.fill((255, 255, 0))
         self.rect = self.surf.get_rect(topleft=self.pos)
+    

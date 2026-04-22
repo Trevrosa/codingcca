@@ -1,20 +1,36 @@
 from consts import HEIGHT, WIDTH
-from objects import Platform
+from objects import Coin, Platform
 
 class Level:
-    def __init__(self, platforms: list[Platform]):
+    def __init__(self, platforms: list[Platform], coins: list[Coin] = []):
         self.platforms = platforms
+        self.coins = coins
 
-        self.sprites = platforms
+        self.sprites = self.platforms + self.coins
+    
+    def remove_coin(self, coin: Coin):
+        if coin not in self.coins:
+            print("tried to remove coin that does not exist ?")
+            return
 
-levels = {}
+        print("removing coin at", coin.pos)
+        coin.kill()
+        self.coins.remove(coin)
+        self.sprites.remove(coin)
+
+levels: dict[tuple[int, int], Level] = {}
 
 levels[(0, 0)] = Level(
     platforms=[
         Platform((0, HEIGHT)),
         Platform((WIDTH // 2 - 60, HEIGHT - 70), length=100),
         Platform((WIDTH // 4 - 20, HEIGHT - 190), length=100),
-        Platform((WIDTH - WIDTH/4, HEIGHT)),
+        Platform((WIDTH // 4 - 20 + 100, HEIGHT - 190), length=10, width=100),
+        Platform((WIDTH - WIDTH/4, HEIGHT)),        
+    ],
+    coins=[
+        Coin((WIDTH // 2 - 60 + 50, HEIGHT - 70 - 60)),
+        Coin((WIDTH // 4 - 20 + 50, HEIGHT - 190 - 60)),
     ]
 )
 
