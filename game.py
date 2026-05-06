@@ -14,7 +14,7 @@ from pygame.constants import (
 from pygame.math import Vector2 as vec
 
 from consts import DEBUG, WIDTH, HEIGHT, ACCEL, FRICTION, FPS
-from objects import Platform
+from objects.platform import Platform
 from util import debug
 
 pygame.init()

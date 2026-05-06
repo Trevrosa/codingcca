@@ -1,13 +1,16 @@
 from consts import HEIGHT, WIDTH
-from objects import Coin, Platform
+from objects.platform import Platform
+from objects.coin import Coin
+from objects.spikes import Spikes
 
 class Level:
-    def __init__(self, platforms: list[Platform], coins: list[Coin] = []):
+    def __init__(self, platforms: list[Platform], coins: list[Coin] = [], spikes: list[Spikes] = []):
         self.platforms = platforms
         self.coins = coins
+        self.spikes = spikes
 
-        self.sprites = self.platforms + self.coins
-    
+        self.sprites = self.platforms + self.coins + self.spikes
+
     def remove_coin(self, coin: Coin):
         if coin not in self.coins:
             print("tried to remove coin that does not exist ?")
@@ -31,6 +34,10 @@ levels[(0, 0)] = Level(
     coins=[
         Coin((WIDTH // 2 - 60 + 50, HEIGHT - 70 - 60)),
         Coin((WIDTH // 4 - 20 + 50, HEIGHT - 190 - 60)),
+    ],
+    spikes=[
+        Spikes((WIDTH // 2 - 60 + 50, HEIGHT - 70 - 20)),
+        Spikes((WIDTH // 4 - 20 + 50, HEIGHT - 190 - 20)),
     ]
 )
 

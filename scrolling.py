@@ -14,11 +14,15 @@ from pygame.constants import (
 )
 from pygame.math import Vector2 as vec
 
+from objects.spikes import Spikes
 from scrolling_levels import levels
-from objects import Platform
-from scrolling_objects import Bullet, End, Enemy
 from consts import DEBUG, WIDTH, HEIGHT, ACCEL, FRICTION, FPS
 from util import debug, transform
+
+from objects.platform import Platform
+from objects.bullet import Bullet
+from objects.end import End
+from objects.enemy import Enemy
 
 pygame.init()
 
@@ -58,12 +62,13 @@ class Player(pygame.sprite.Sprite):
         self.vel += self.accel
         self.pos += self.vel + 0.5 * self.accel
 
-        self.rect.midbottom = self.pos  # type: ignore
+        self.rect.midbottom = self.pos 
 
     def jump(self):
         self.vel.y = -15
 
     def update(self):
+        global level_num
         #                                sprite  sprites  delete?
         hits = pygame.sprite.spritecollide(PLAYER, LEVEL, False)  # type: ignore
         for hit in hits:
@@ -86,13 +91,15 @@ class Player(pygame.sprite.Sprite):
                     self.pos.y = hits[0].rect.top + 1
                     self.vel.y = 0
             elif isinstance(hit, End):
-                global level_num
                 level_num += 1
                 if level_num >= len(levels):
                     print("you win!")
                     pygame.quit()
                     sys.exit()
                 setup_level()
+            elif isinstance(hit, Spikes):
+                self.pos = vec(levels[level_num].start_position)
+                self.vel = vec(0, 0)
 
         if self.pos.y > HEIGHT:
             self.pos = vec(15, HEIGHT - 50)
@@ -126,7 +133,8 @@ def setup_level():
     ALL_SPRITES.add(PLAYER)
     ALL_SPRITES.add(LEVEL)
 
-    PLAYER.pos = levels[level_num].start_position
+    # if not wrapped in vec, the player's pos changes the start_position
+    PLAYER.pos = vec(levels[level_num].start_position)
     PLAYER.vel = vec(0, 0)
 
 

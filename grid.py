@@ -15,7 +15,8 @@ from pygame.math import Vector2 as vec
 
 from consts import DEBUG, WIDTH, HEIGHT, ACCEL, FRICTION, FPS
 from grid_levels import levels
-from objects import Coin
+from objects.coin import Coin
+from objects.spikes import Spikes
 from util import debug
 
 pygame.init()
@@ -66,6 +67,12 @@ class Player(pygame.sprite.Sprite):
             if isinstance(hit, Coin):
                 levels[level_pos].remove_coin(hit)
                 self.score += 1
+                continue
+            if isinstance(hit, Spikes):
+                level_pos = (0, 0)
+                self.vel = vec(0, 0)
+                self.pos = vec(15, HEIGHT - 50)
+                setup_level()
                 continue
             if self.pos.x < hit.rect.left:
                 self.pos.x = hit.rect.left - self.surf.get_width() / 2

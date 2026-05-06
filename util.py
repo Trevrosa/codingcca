@@ -4,8 +4,13 @@ from pygame.surface import Surface
 from pygame.math import Vector2 as vec
 
 from consts import FONT, WIDTH, HEIGHT
-from objects import Coin, Platform
-from scrolling_objects import Bullet, End, Enemy
+
+from objects.platform import Platform
+from objects.end import End
+from objects.coin import Coin
+from objects.enemy import Enemy
+from objects.bullet import Bullet
+from objects.spikes import Spikes
 
 
 def text(text: str, font: Font = FONT) -> Surface:
@@ -30,6 +35,8 @@ def fmt_obj(obj) -> str:
         return "Enemy"
     elif isinstance(obj, Bullet):
         return "Bullet"
+    elif isinstance(obj, Spikes):
+        return "Spikes"
     else:
         return "Unknown object!"
 
